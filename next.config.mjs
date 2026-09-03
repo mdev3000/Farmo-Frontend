@@ -10,7 +10,7 @@ const withPWA = withPWAInit({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {},
-  allowedDevOrigins: ["localhost", "127.0.0.1", "api.farmo.in", "farmo.in"],
+  allowedDevOrigins: ["localhost", "127.0.0.1", "api.farmo.in", "farmo.in","https://4648-49-248-175-214.ngrok-free.app"],
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -21,6 +21,16 @@ const nextConfig = {
         protocol: "https",
         hostname: "api.farmo.in",
         pathname: "/media/**",
+      },
+      {
+        protocol: "https",
+        hostname: "4648-49-248-175-214.ngrok-free.app ",
+        pathname: "/media/**",
+      },
+      {
+        protocol: "https",
+        hostname: "4648-49-248-175-214.ngrok-free.app",
+        pathname: "/**",
       },
       {
         protocol: "http",
