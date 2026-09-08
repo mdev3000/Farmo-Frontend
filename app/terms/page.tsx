@@ -1,101 +1,99 @@
-import { DesktopHeader } from "@/components/desktop-header"
-import { MobileHeader } from "@/components/mobile-header"
-import { BottomNav } from "@/components/bottom-nav"
+import React from "react"
+import type { Metadata } from "next"
+import Link from "next/link"
+import { ScrollReveal } from "@/components/ui/scroll-reveal"
 
-export const metadata = {
-  title: "Terms & Conditions | Farmo",
-  description: "Read the rules and guidelines for using the Farmo agricultural platform.",
+export const metadata: Metadata = {
+  title: "Terms & Conditions — Farmo",
+  description: "Read the terms, rules, and guidelines for using the Farmo agricultural mechanization and labor platform.",
 }
 
 export default function TermsAndConditionsPage() {
   return (
-    <div className="flex flex-col min-h-screen pb-24 lg:pb-0 bg-background">
-      <DesktopHeader variant="farmer" />
-      <MobileHeader />
-
-      <main className="flex-1 max-w-4xl mx-auto w-full px-5 py-8 md:py-16">
-        <div className="bg-card border border-border rounded-3xl p-6 md:p-10 shadow-sm">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Terms & Conditions</h1>
-          <p className="text-muted-foreground mb-8">Effective Date: {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
-
-          <div className="space-y-8 text-foreground/90 leading-relaxed">
-            
-            <section>
-              <h2 className="text-xl font-bold text-foreground mb-3">1. Agreement to Terms</h2>
-              <p>
-                By accessing or using the Farmo mobile application or website ("Platform"), you agree to be bound by these Terms and Conditions. If you disagree with any part of the terms, you must not access the service. These Terms apply to all users, including customers seeking services ("Users") and those providing them ("Partners/Providers").
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-bold text-foreground mb-3">2. Platform Description</h2>
-              <p className="mb-2">
-                Farmo is a digital marketplace that connects agricultural workers, machinery owners, and transporters (Service Providers) with individuals seeking such services. We provide the technology to facilitate these connections, but <strong>Farmo is not directly responsible for the fulfillment, quality, or safety of the services rendered.</strong>
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-bold text-foreground mb-3">3. User Accounts</h2>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>You are responsible for safeguarding your authentication OTPs and maintaining the confidentiality of your account.</li>
-                <li>You agree to provide accurate, current, and complete information during registration and keep it updated.</li>
-                <li>Accounts are non-transferable. You must immediately notify Farmo of any unauthorized use of your account.</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-bold text-foreground mb-3">4. Bookings and Payments</h2>
-              <ul className="list-disc pl-6 space-y-2">
-                <li><strong>Service Requests:</strong> The Platform enables you to schedule services in advance or request them instantly. All bookings are subject to Provider availability.</li>
-                <li><strong>Cancellations:</strong> Users may cancel scheduled bookings within the grace period (typically 24 hours prior) without penalty. Instant bookings that are cancelled after being accepted by a provider may incur a cancellation fee.</li>
-                <li><strong>Payments:</strong> All fees are stated at the time of booking. Payment must be completed via the authorized channels listed on the platform. Farmo acts as a limited payment collection agent for Service Providers.</li>
-              </ul>
-            </section>
-
-            <section className="bg-muted/30 p-5 rounded-2xl border border-border">
-              <h2 className="text-xl font-bold text-foreground mb-3">5. Service Provider Guidelines</h2>
-              <p className="mb-3">
-                If you are registered as a "Partner" or Service Provider, you agree to:
-              </p>
-              <ul className="list-disc pl-6 space-y-2 text-sm">
-                <li>Maintain necessary licenses, insurance, and qualifications required to operate farm machinery legally.</li>
-                <li>Accurately represent the condition of your equipment and the quality of your labor.</li>
-                <li>Commit to accepted bookings and use the provided security OTPs to start and complete jobs legitimately.</li>
-                <li>Farmo retains the right to remove Providers from the platform for repeated cancellations, poor ratings, or fraudulent behavior.</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-bold text-foreground mb-3">6. Limitation of Liability</h2>
-              <p className="mb-2">
-                To the maximum extent permitted by applicable law, Farmo and its affiliates shall not be liable for:
-              </p>
-              <ul className="list-disc pl-6 space-y-2">
-                <li>Any direct, indirect, incidental, or consequential damages resulting from your use of the Platform.</li>
-                <li>Property damage, crop failure, or personal injury occurring during the fulfillment of a booked service.</li>
-                <li>Disputes or disagreements solely between Users and Service Providers. We encourage both parties to resolve disputes amicably, though Farmo may assist in mediation at its sole discretion.</li>
-              </ul>
-            </section>
-            
-            <section>
-              <h2 className="text-xl font-bold text-foreground mb-3">7. Modifications to the Service</h2>
-              <p>
-                We reserve the right to withdraw or amend our service, and any material we provide, at our sole discretion without notice. We will not be liable if, for any reason, all or any part of the Platform is unavailable at any time.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-bold text-foreground mb-3">8. Governing Law</h2>
-              <p>
-                These Terms shall be governed and construed in accordance with the laws of India, without regard to its conflict of law provisions. Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights.
-              </p>
-            </section>
-
+    <div className="w-full min-h-screen py-12 md:py-20 bg-background">
+      <div className="max-w-4xl mx-auto px-5 sm:px-6">
+        <ScrollReveal className="bg-card border border-border rounded-3xl p-6 sm:p-10 shadow-sm">
+          <div className="border-b border-border pb-6 mb-8">
+            <span className="text-xs uppercase font-bold text-primary tracking-wider">
+              Legal Agreement
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground mt-1">
+              Terms &amp; Conditions
+            </h1>
+            <p className="text-xs text-muted-foreground mt-2">
+              Effective Date: {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+            </p>
           </div>
-        </div>
-      </main>
 
-      <BottomNav variant="farmer" />
+          <div className="space-y-8 text-foreground/90 text-sm leading-relaxed">
+            <section>
+              <h2 className="text-lg font-bold text-foreground mb-2">1. Agreement to Terms</h2>
+              <p>
+                By accessing or using the Farmo website, mobile applications, or rural cluster services (&ldquo;Platform&rdquo;), you agree to be bound by these Terms and Conditions. If you disagree with any part of these terms, you must not access the platform. These Terms apply to all users, including farmers seeking machinery or labor (&ldquo;Customers&rdquo;) and equipment owners, drivers, or labor contractors (&ldquo;Partners/Providers&rdquo;).
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-foreground mb-2">2. Nature of Platform &amp; Working Clusters</h2>
+              <p>
+                Farmo is an agricultural mechanization and workforce enablement platform. We establish digital coordination and physical working clusters to connect agricultural equipment owners and farm laborers with growers. Farmo verifies equipment fitness and operator credentials, and facilitates digital transparent dispatch through our cluster coordinators.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-foreground mb-2">3. Service Bookings &amp; Fuel Terms</h2>
+              <ul className="list-disc pl-5 space-y-1.5 text-muted-foreground">
+                <li><strong className="text-foreground">Booking Confirmation:</strong> Bookings requested through the website or mobile application are scheduled based on machine and labor squad availability in your designated village cluster.</li>
+                <li><strong className="text-foreground">Wet vs Dry Rent:</strong> If &ldquo;Wet Rent&rdquo; is selected, diesel is provided as part of the hourly/acreage fee. If &ldquo;Dry Rent&rdquo; is selected, the customer must supply clean, uncontaminated diesel at their field boundary.</li>
+                <li><strong className="text-foreground">Hour Meter &amp; Acreage Calculation:</strong> Invoicing is strictly calculated based on digital GPS telemetry or cluster coordinator physical acre verification.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-foreground mb-2">4. Partner &amp; Provider Standards</h2>
+              <p className="mb-2">
+                All registered machinery owners and labor crew captains agree to:
+              </p>
+              <ul className="list-disc pl-5 space-y-1.5 text-muted-foreground">
+                <li>Maintain valid registration certificates (RC) and safety inspection compliance.</li>
+                <li>Ensure machine operators hold valid commercial driver licenses where legally mandated.</li>
+                <li>Treat all agricultural labor crews with dignity and uphold fair wage compliance.</li>
+                <li>Report punctually to scheduled field locations as directed by the cluster dispatch manager.</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-foreground mb-2">5. Weather &amp; Force Majeure Grace</h2>
+              <p>
+                Agriculture is subject to sudden weather changes. In the event of unseasonal rains, hail, or flooded terrain that makes field mechanization technically impossible or unsafe, neither the farmer nor the equipment partner shall be penalized for rescheduling.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-bold text-foreground mb-2">6. Contact &amp; Grievance Redressal</h2>
+              <p>
+                For questions or dispute resolution regarding bookings or payments, contact our operations desk at{" "}
+                <a href="mailto:support@farmo.in" className="text-primary font-bold hover:underline">
+                  support@farmo.in
+                </a>{" "}
+                or call{" "}
+                <a href="tel:+919175877571" className="text-primary font-bold hover:underline">
+                  +91-9175877571
+                </a>.
+              </p>
+            </section>
+          </div>
+
+          <div className="mt-10 pt-6 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+            <Link href="/" className="text-primary font-semibold hover:underline">
+              &larr; Back to Farmo Home
+            </Link>
+            <Link href="/privacy" className="hover:text-foreground">
+              Read Privacy Policy &rarr;
+            </Link>
+          </div>
+        </ScrollReveal>
+      </div>
     </div>
   )
 }

@@ -1,961 +1,240 @@
-"use client"
+import React from "react"
+import type { Metadata } from "next"
+import Image from "next/image"
+import Link from "next/link"
+import { ScrollReveal } from "@/components/ui/scroll-reveal"
+import { 
+  Handshake, 
+  Tractor, 
+  Users, 
+  MapPin, 
+  CheckCircle2, 
+  ArrowRight, 
+  Sparkles,
+} from "lucide-react"
 
-import { useEffect, useState, useCallback } from "react"
-import { PartnerLayout } from "@/components/partner-layout"
-import { useLanguage } from "@/contexts/language-context"
-
-// ─── Types ────────────────────────────────────────────────
-interface BookingItem {
-  id: number
-  booking_id: string
-  booking_type: "SCHEDULED" | "INSTANT"
-  status: string
-  service_title: string
-  category_name: string | null
-  provider_name: string | null
-  customer_phone: string
-  scheduled_date: string | null
-  scheduled_time: string | null
-  quantity: number
-  price_unit: string
-  unit_price: string
-  total_amount: string
-  expires_at: string | null
-  created_at: string
-  order_number: string | null
-  address?: string
-  lat?: string
-  lng?: string
-  note?: string
-  cancellation_reason?: string
-  // Detail fields (only from detail API)
-  customer?: { phone_number: string; full_name: string }
-  start_job_otp?: string
-  end_job_otp?: string
-  work_started_at?: string
-  work_completed_at?: string
+export const metadata: Metadata = {
+  title: "Become a Farmo Partner — Monetize Your Machinery & Labor Network",
+  description:
+    "Join Farmo as a machine owner, labor contractor, or cluster entrepreneur. Maximize equipment utilization and earn predictable revenue across every farming season.",
 }
 
-interface InstantRequestItem {
-  id: number
-  booking_id: string
-  booking_type: "INSTANT"
-  booking_status: string
-  order_number: string | null
-  category_name: string | null
-  service_title: string
-  customer_phone: string
-  address: string
-  lat: string
-  lng: string
-  quantity: number
-  price_unit: string
-  unit_price: string
-  total_amount: string
-  note: string
-  expires_at: string | null
-  created_at: string
-  status: string
-  distance_km: string | null
-  notified_at: string
-  response_deadline: string | null
-}
+const PARTNER_TRACKS = [
+  {
+    icon: Tractor,
+    title: "Tractor & Implement Owners",
+    tagline: "Turn idle machinery into steady seasonal income",
+    description: "List your tractors, rotavators, harvesters, and sprayers. Receive routed cluster demand without downtime or marketing costs.",
+    benefits: [
+      "Peak-season booking calendar",
+      "Diesel and transit reimbursement",
+      "Routine cluster mechanic inspection",
+      "Operator accidental insurance coverage",
+    ],
+    earningEstimate: "₹40,000 – ₹85,000 / month",
+  },
+  {
+    icon: Users,
+    title: "Labor Mukadams & Crew Leads",
+    tagline: "Guaranteed contracts and dignity for your workforce",
+    description: "Organize contracts for your harvest gangs, weeding crews, or masonry trades with transparent daily wages and guaranteed payouts.",
+    benefits: [
+      "Steady work across sowing, weeding, and harvest",
+      "Direct group bank transfers without delays",
+      "Organized transit to cluster work sites",
+      "Safety equipment and hydration kits provided",
+    ],
+    earningEstimate: "Direct wage pass-through + 10% Contractor Margin",
+  },
+  {
+    icon: MapPin,
+    title: "Cluster Hub Franchisee / Entrepreneur",
+    tagline: "Lead a high-tech rural agricultural hub",
+    description: "Manage local machine dispatch, farmer relationships, and daily cluster operations with Farmo's digital platform and regional support.",
+    benefits: [
+      "Exclusive geographic territory for your cluster",
+      "Farmo digital dispatch, scheduling, and billing app",
+      "Dedicated field marketing and farmer lead generation",
+      "Attractive volume commissions on every acre served",
+    ],
+    earningEstimate: "₹75,000 – ₹1,80,000 / month net commission",
+  },
+]
 
-// Unified card type for rendering
-type DashboardBooking = {
-  type: "scheduled" | "instant"
-  id: string           // unique key for the card
-  booking_id: string
-  service_title: string
-  category_name: string | null
-  customer_phone: string
-  amount: string
-  created_at: string
-  scheduled_date: string | null
-  scheduled_time: string | null
-  booking_type: "SCHEDULED" | "INSTANT"
-  status: string
-  quantity: number
-  price_unit: string
-  unit_price: string
-  address: string
-  lat: string
-  lng: string
-  note: string
-  distance_km: string | null
-  expires_at: string | null
-  order_number: string | null
-  // For actions
-  original_booking_id?: string // booking_id for scheduled action
-  instant_request_id?: number  // pk for instant action
-  // Detail fields (loaded on demand)
-  start_job_otp?: string
-  end_job_otp?: string
-  work_started_at?: string
-  work_completed_at?: string
-  cancellation_reason?: string
-}
+const ONBOARDING_STEPS = [
+  {
+    num: "1",
+    title: "Submit Details",
+    desc: "Share your equipment specifications, crew strength, or preferred cluster location.",
+  },
+  {
+    num: "2",
+    title: "Verification Visit",
+    desc: "Farmo's field operations lead verifies equipment condition, documents, or hub premises.",
+  },
+  {
+    num: "3",
+    title: "Onboard to Farmo Network",
+    desc: "Your services are listed live on the Farmo network and ready to receive steady bookings.",
+  },
+]
 
-const PRICE_UNIT_LABELS: Record<string, string> = {
-  HOUR: "Per Hour",
-  DAY: "Per Day",
-  KM: "Per Km",
-  ACRE: "Per Acre",
-  FIXED: "Fixed",
-}
-
-export default function PartnerDashboard() {
-  const { t } = useLanguage()
-  // ─── State ──────────────────────────────────────────────
-  const [waitingBookings, setWaitingBookings] = useState<DashboardBooking[]>([])
-  const [acceptedBookings, setAcceptedBookings] = useState<DashboardBooking[]>([])
-  const [rejectedBookings, setRejectedBookings] = useState<DashboardBooking[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [actionLoading, setActionLoading] = useState<string | null>(null)
-  const [selectedBooking, setSelectedBooking] = useState<DashboardBooking | null>(null)
-  const [showRejected, setShowRejected] = useState(false)
-
-  // ─── Data Fetching ──────────────────────────────────────
-  const fetchDashboardData = useCallback(async () => {
-    try {
-      const results = await Promise.allSettled([
-        fetch("/api/partner/bookings?status=PENDING"),
-        fetch("/api/partner/instant-requests"),
-        fetch("/api/partner/bookings?status=CONFIRMED"),
-        fetch("/api/partner/bookings?status=IN_PROGRESS"),
-        fetch("/api/partner/bookings?status=REJECTED"),
-      ])
-
-      // Parse all responses (fault-tolerant: failed requests return empty array)
-      const parse = async (result: PromiseSettledResult<Response>) => {
-        if (result.status === "rejected") return []
-        const res = result.value
-        if (!res.ok) return []
-        try {
-          const data = await res.json()
-          return Array.isArray(data) ? data : data.results || []
-        } catch { return [] }
-      }
-
-      const pending: BookingItem[] = await parse(results[0])
-      const instant: InstantRequestItem[] = await parse(results[1])
-      const confirmed: BookingItem[] = await parse(results[2])
-      const inProgress: BookingItem[] = await parse(results[3])
-      const rejected: BookingItem[] = await parse(results[4])
-
-      // ── Build Waiting Bookings (pending scheduled + instant requests) ──
-      const waitingList: DashboardBooking[] = [
-        ...pending.map((b): DashboardBooking => ({
-          type: "scheduled",
-          id: `sched-${b.booking_id}`,
-          booking_id: b.booking_id,
-          service_title: b.service_title,
-          category_name: b.category_name,
-          customer_phone: b.customer_phone,
-          amount: b.total_amount,
-          created_at: b.created_at,
-          scheduled_date: b.scheduled_date,
-          scheduled_time: b.scheduled_time,
-          booking_type: b.booking_type,
-          status: b.status,
-          quantity: b.quantity || 1,
-          price_unit: b.price_unit || "HOUR",
-          unit_price: b.unit_price || b.total_amount,
-          address: b.address || "",
-          lat: b.lat || "",
-          lng: b.lng || "",
-          note: b.note || "",
-          distance_km: null,
-          expires_at: b.expires_at,
-          order_number: b.order_number,
-          original_booking_id: b.booking_id,
-        })),
-        ...instant.map((r): DashboardBooking => ({
-          type: "instant",
-          id: `inst-${r.id}`,
-          booking_id: r.booking_id,
-          service_title: r.service_title,
-          category_name: r.category_name,
-          customer_phone: r.customer_phone,
-          amount: String(r.total_amount),
-          created_at: r.created_at,
-          scheduled_date: null,
-          scheduled_time: null,
-          booking_type: "INSTANT",
-          status: "PENDING",
-          quantity: r.quantity,
-          price_unit: r.price_unit,
-          unit_price: String(r.unit_price),
-          address: r.address,
-          lat: r.lat,
-          lng: r.lng,
-          note: r.note || "",
-          distance_km: r.distance_km,
-          expires_at: r.expires_at,
-          order_number: r.order_number,
-          instant_request_id: r.id,
-        })),
-      ]
-      setWaitingBookings(waitingList)
-
-      // ── Build Accepted / Need to Complete ──
-      const acceptedList: DashboardBooking[] = [
-        ...confirmed.map((b) => bookingToDashboard(b, "CONFIRMED")),
-        ...inProgress.map((b) => bookingToDashboard(b, "IN_PROGRESS")),
-      ]
-      setAcceptedBookings(acceptedList)
-
-      // ── Build Rejected ──
-      const rejectedList: DashboardBooking[] = rejected.map((b) => bookingToDashboard(b, "REJECTED"))
-      setRejectedBookings(rejectedList)
-
-    } catch (error) {
-      console.error("Dashboard fetch error:", error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
-  const bookingToDashboard = (b: BookingItem, status: string): DashboardBooking => ({
-    type: b.booking_type === "INSTANT" ? "instant" : "scheduled",
-    id: `book-${b.booking_id}`,
-    booking_id: b.booking_id,
-    service_title: b.service_title,
-    category_name: b.category_name,
-    customer_phone: b.customer_phone,
-    amount: b.total_amount,
-    created_at: b.created_at,
-    scheduled_date: b.scheduled_date,
-    scheduled_time: b.scheduled_time,
-    booking_type: b.booking_type || "SCHEDULED",
-    status,
-    quantity: b.quantity || 1,
-    price_unit: b.price_unit || "HOUR",
-    unit_price: b.unit_price || b.total_amount,
-    address: b.address || "",
-    lat: b.lat || "",
-    lng: b.lng || "",
-    note: b.note || "",
-    distance_km: null,
-    expires_at: b.expires_at,
-    order_number: b.order_number,
-    original_booking_id: b.booking_id,
-    cancellation_reason: b.cancellation_reason,
-  })
-
-  useEffect(() => {
-    fetchDashboardData()
-    const interval = setInterval(fetchDashboardData, 30000)
-    return () => clearInterval(interval)
-  }, [fetchDashboardData])
-
-
-
-  // ─── Actions ──────────────────────────────────────────
-  const handleScheduledAction = async (bookingId: string, action: "accept" | "reject") => {
-    setActionLoading(bookingId)
-    try {
-      const res = await fetch(`/api/partner/bookings/${bookingId}/action`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action,
-          rejection_reason: action === "reject" ? "Not available right now" : undefined,
-        }),
-      })
-      if (res.ok) {
-        setSelectedBooking(null)
-        fetchDashboardData()
-      }
-    } catch (error) {
-      console.error("Booking action error:", error)
-    } finally {
-      setActionLoading(null)
-    }
-  }
-
-  const handleInstantAction = async (requestId: number, action: "accept" | "decline") => {
-    setActionLoading(`inst-${requestId}`)
-    try {
-      const res = await fetch(`/api/partner/instant-requests/${requestId}/respond`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
-      })
-      if (res.ok) {
-        setSelectedBooking(null)
-        fetchDashboardData()
-      } else {
-        const data = await res.json()
-        if (res.status === 409) {
-          alert(data.message || "This booking is no longer available.")
-          fetchDashboardData()
-        }
-      }
-    } catch (error) {
-      console.error("Instant action error:", error)
-    } finally {
-      setActionLoading(null)
-    }
-  }
-
-  const handleJobAction = async (bookingId: string, action: "start" | "complete", otp?: string) => {
-    setActionLoading(bookingId)
-    try {
-      const res = await fetch(`/api/partner/bookings/${bookingId}/action`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, otp }),
-      })
-      if (res.ok) {
-        setSelectedBooking(null)
-        fetchDashboardData()
-      } else {
-        const data = await res.json()
-        alert(data.message || "Action failed. Please check the OTP.")
-      }
-    } catch (error) {
-      console.error("Job action error:", error)
-    } finally {
-      setActionLoading(null)
-    }
-  }
-
-  // ─── Formatters ──────────────────────────────────────
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr)
-    const now = new Date()
-    const diffMs = now.getTime() - date.getTime()
-    const diffMins = Math.floor(diffMs / 60000)
-    if (diffMins < 1) return "Just now"
-    if (diffMins < 60) return `${diffMins}m ago`
-    const diffHours = Math.floor(diffMins / 60)
-    if (diffHours < 24) return `${diffHours}h ago`
-    return date.toLocaleDateString("en-IN", { day: "numeric", month: "short" })
-  }
-
-  const formatAmount = (amount: string | number) => `₹${Number(amount).toLocaleString("en-IN")}`
-
-  const formatExpiry = (expiresAt: string | null) => {
-    if (!expiresAt) return null
-    const exp = new Date(expiresAt)
-    const now = new Date()
-    const diffMs = exp.getTime() - now.getTime()
-    if (diffMs <= 0) return "Expired"
-    const diffMins = Math.floor(diffMs / 60000)
-    const diffSecs = Math.floor((diffMs % 60000) / 1000)
-    if (diffMins > 0) return `${diffMins}m ${diffSecs}s left`
-    return `${diffSecs}s left`
-  }
-
-  // ─── Render ──────────────────────────────────────────
+export default function PartnerPage() {
   return (
-    <PartnerLayout pageTitle={t("dashboard.title")}>
-      {isLoading && (
-        <div className="flex items-center justify-center py-16">
-          <div className="w-8 h-8 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-        </div>
-      )}
-
-      {!isLoading && (
-        <div className="flex flex-col gap-6">
-
-          {/* ═══ Waiting Bookings ═══ */}
-          {waitingBookings.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="material-symbols-outlined text-amber-500">schedule</span>
-                <h3 className="text-lg font-bold text-foreground">{t("dashboard.waiting")}</h3>
-                <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded-full">
-                  {waitingBookings.length}
-                </span>
-              </div>
-              <div className="flex flex-col gap-3">
-                {waitingBookings.map((booking) => (
-                  <WaitingBookingCard
-                    key={booking.id}
-                    booking={booking}
-                    onView={() => setSelectedBooking(booking)}
-                    onAccept={() => {
-                      if (booking.type === "instant" && booking.instant_request_id) {
-                        handleInstantAction(booking.instant_request_id, "accept")
-                      } else if (booking.original_booking_id) {
-                        handleScheduledAction(booking.original_booking_id, "accept")
-                      }
-                    }}
-                    actionLoading={actionLoading}
-                    formatDate={formatDate}
-                    formatAmount={formatAmount}
-                    formatExpiry={formatExpiry}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ═══ Accepted / Need to Complete ═══ */}
-          {acceptedBookings.length > 0 && (
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="material-symbols-outlined text-success">check_circle</span>
-                <h3 className="text-lg font-bold text-foreground">{t("dashboard.accepted")}</h3>
-                <span className="bg-green-100 text-green-800 text-xs font-bold px-2 py-0.5 rounded-full">
-                  {acceptedBookings.length}
-                </span>
-              </div>
-              <div className="flex flex-col gap-3">
-                {acceptedBookings.map((booking) => (
-                  <AcceptedBookingCard
-                    key={booking.id}
-                    booking={booking}
-                    onView={() => setSelectedBooking(booking)}
-                    formatDate={formatDate}
-                    formatAmount={formatAmount}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ═══ Rejected ═══ */}
-          {rejectedBookings.length > 0 && (
-            <div>
-              <button
-                onClick={() => setShowRejected(!showRejected)}
-                className="flex items-center gap-2 mb-3 w-full"
-              >
-                <span className="material-symbols-outlined text-red-400">cancel</span>
-                <h3 className="text-lg font-bold text-foreground">{t("dashboard.rejected")}</h3>
-                <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">
-                  {rejectedBookings.length}
-                </span>
-                <span className={`material-symbols-outlined text-muted ml-auto transition-transform ${showRejected ? "rotate-180" : ""}`}>
-                  expand_more
-                </span>
-              </button>
-              {showRejected && (
-                <div className="flex flex-col gap-3">
-                  {rejectedBookings.map((booking) => (
-                    <div key={booking.id} className="bg-card p-4 rounded-2xl border border-red-100 opacity-70">
-                      <div className="flex items-center gap-4">
-                        <div className="size-10 rounded-xl bg-red-50 text-red-400 flex items-center justify-center shrink-0">
-                          <span className="material-symbols-outlined text-xl">block</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-foreground font-semibold text-sm truncate">{booking.service_title}</h4>
-                          <p className="text-xs text-muted mt-0.5">{formatDate(booking.created_at)}</p>
-                        </div>
-                        <p className="text-muted font-semibold text-sm">{formatAmount(booking.amount)}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ═══ Empty State ═══ */}
-          {waitingBookings.length === 0 && acceptedBookings.length === 0 && rejectedBookings.length === 0 && (
-            <div className="bg-card rounded-2xl border border-border p-12 text-center">
-              <span className="material-symbols-outlined text-6xl text-muted/30 mb-4">inbox</span>
-              <h3 className="text-lg font-bold text-foreground mb-2">{t("dashboard.no_active")}</h3>
-              <p className="text-muted text-sm max-w-md mx-auto">
-                {t("dashboard.no_active_desc")}
-              </p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ═══ Booking Detail Modal ═══ */}
-      {selectedBooking && (
-        <BookingDetailModal
-          booking={selectedBooking}
-          onClose={() => setSelectedBooking(null)}
-          onScheduledAction={handleScheduledAction}
-          onInstantAction={handleInstantAction}
-          onJobAction={handleJobAction}
-          actionLoading={actionLoading}
-          formatAmount={formatAmount}
-          formatDate={formatDate}
-          formatExpiry={formatExpiry}
+    <div className="flex flex-col w-full min-h-screen">
+      {/* 1. Hero Header Banner - Full Viewport Height with AI Image */}
+      <section className="relative isolate flex min-h-[calc(100svh-64px)] flex-col justify-end items-center overflow-hidden bg-black pb-6 sm:pb-8 pt-16 border-b border-border">
+        <Image
+          src="/partner-hero-banner.jpg"
+          alt="Farmo Rural Partnership Network"
+          fill
+          priority
+          className="object-cover object-center"
         />
-      )}
-    </PartnerLayout>
-  )
-}
+        {/* Clean bottom gradient for text contrast while keeping partners and tractor workshop completely visible */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 via-25% to-transparent" />
 
+        <ScrollReveal className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pb-2">
+          <div className="space-y-3 sm:space-y-4">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold text-white tracking-tight leading-snug max-w-4xl mx-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
+              Grow Your Farm Service Business with Farmo
+            </h1>
 
-// ═══════════════════════════════════════════════════════════
-// Sub-Components
-// ═══════════════════════════════════════════════════════════
-
-function WaitingBookingCard({
-  booking,
-  onView,
-  onAccept,
-  actionLoading,
-  formatDate,
-  formatAmount,
-  formatExpiry,
-}: {
-  booking: DashboardBooking
-  onView: () => void
-  onAccept: () => void
-  actionLoading: string | null
-  formatDate: (d: string) => string
-  formatAmount: (a: string | number) => string
-  formatExpiry: (e: string | null) => string | null
-}) {
-  const { t } = useLanguage()
-  const expiry = formatExpiry(booking.expires_at)
-  const isAccepting = actionLoading === booking.id || actionLoading === booking.booking_id
-
-  return (
-    <div className="w-full bg-card rounded-2xl border border-border hover:border-primary/30 hover:shadow-md transition-all">
-      {/* Card top: tap to view details */}
-      <button onClick={onView} className="w-full text-left p-3 sm:p-4">
-        <div className="flex items-start gap-3">
-          <div className={`size-10 sm:size-12 rounded-xl flex items-center justify-center shrink-0 ${booking.booking_type === "INSTANT"
-            ? "bg-purple-50 text-purple-600"
-            : "bg-amber-50 text-amber-600"
-            }`}>
-            <span className="material-symbols-outlined text-xl sm:text-2xl">
-              {booking.booking_type === "INSTANT" ? "bolt" : "calendar_month"}
-            </span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <h4 className="text-foreground font-bold text-sm sm:text-base truncate max-w-35 sm:max-w-none">{booking.service_title}</h4>
-              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 ${booking.booking_type === "INSTANT"
-                ? "bg-purple-100 text-purple-700"
-                : "bg-blue-100 text-blue-700"
-                }`}>
-                {/* {booking.booking_type === "INSTANT" ? "Instant" : "📅 Scheduled"} */}
-              </span>
-            </div>
-            <div className="flex items-center gap-2 mt-1 flex-wrap">
-              <p className="text-xs text-muted">
-                {booking.scheduled_date || formatDate(booking.created_at)}
-                {booking.scheduled_time && ` • ${booking.scheduled_time}`}
-              </p>
-              {booking.distance_km && (
-                <span className="text-xs text-blue-600 font-medium">
-                  📍 {Number(booking.distance_km).toFixed(1)} km {t("dashboard.away")}
-                </span>
-              )}
-            </div>
-            {/* Compact pricing row */}
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-primary font-bold text-sm">
-                {formatAmount(booking.unit_price)} x {booking.quantity} {t(`unit.${booking.price_unit}`) === `unit.${booking.price_unit}` ? PRICE_UNIT_LABELS[booking.price_unit] || booking.price_unit : t(`unit.${booking.price_unit}`)}
-              </span>
-              <span className="text-[10px] text-muted">
-                Total {formatAmount(booking.amount)}
-              </span>
-              {expiry && expiry !== "Expired" && (
-                <span className="text-[10px] text-amber-600 font-medium ml-auto">⏱ {expiry}</span>
-              )}
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+              <Link
+                href="/contact?intent=partner"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm font-semibold shadow-xl transition-all hover:scale-105 active:scale-95"
+              >
+                <span>Apply for Partnership</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <a
+                href="#partner-tracks"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/20 text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg transition-all hover:scale-105 active:scale-95"
+              >
+                <span>Explore Partner Tracks</span>
+              </a>
             </div>
           </div>
-        </div>
-      </button>
-      {/* Card bottom: Accept button */}
-      <div className="px-3 sm:px-4 pb-3 sm:pb-4 pt-0">
-        <button
-          disabled={isAccepting}
-          onClick={(e) => { e.stopPropagation(); onAccept() }}
-          className="w-full h-10 rounded-xl bg-primary text-white font-bold text-sm shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-        >
-          {isAccepting ? (
-            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          ) : (
-            <>
-              <span className="material-symbols-outlined text-lg">check_circle</span>
-              {t("dashboard.accept")}
-            </>
-          )}
-        </button>
-      </div>
-    </div>
-  )
-}
+        </ScrollReveal>
+      </section>
 
-
-function AcceptedBookingCard({
-  booking,
-  onView,
-  formatDate,
-  formatAmount,
-}: {
-  booking: DashboardBooking
-  onView: () => void
-  formatDate: (d: string) => string
-  formatAmount: (a: string | number) => string
-}) {
-  const { t } = useLanguage()
-
-  return (
-    <button
-      onClick={onView}
-      className="w-full text-left bg-card p-3 sm:p-4 rounded-2xl border border-border hover:border-green-200 hover:shadow-md transition-all group"
-    >
-      <div className="flex items-start gap-3">
-        <div className={`size-10 sm:size-12 rounded-xl flex items-center justify-center shrink-0 ${booking.status === "IN_PROGRESS"
-          ? "bg-blue-50 text-blue-600"
-          : "bg-green-50 text-success"
-          }`}>
-          <span className="material-symbols-outlined text-xl sm:text-2xl">
-            {booking.status === "IN_PROGRESS" ? "engineering" : "work"}
+      {/* Clean Trust Bar below Hero Image */}
+      <div className="w-full bg-white dark:bg-zinc-950 border-b border-border py-4 px-4">
+        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-foreground/80 font-medium">
+          <span className="inline-flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            Zero Listing Fees
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            Prompt &amp; Transparent Payouts
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            Localized Cluster Support
           </span>
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <h4 className="text-foreground font-bold text-sm sm:text-base truncate max-w-35 sm:max-w-none">{booking.service_title}</h4>
-            {booking.status === "IN_PROGRESS" && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 shrink-0">
-                {t("status.IN_PROGRESS")}
-              </span>
-            )}
-            {booking.booking_type === "INSTANT" && (
-              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 shrink-0">
-                 {t("booking_type.INSTANT")}
-              </span>
-            )}
-          </div>
-          <div className="flex items-center justify-between mt-1 gap-2">
-            <p className="text-xs text-muted">
-              {booking.scheduled_date || formatDate(booking.created_at)}
-              {booking.scheduled_time && ` • ${booking.scheduled_time}`}
+      </div>
+
+      {/* 2. Choose your partnership path */}
+      <section id="partner-tracks" className="py-14 sm:py-20 bg-white dark:bg-zinc-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+              Choose Your Partnership Path
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Tailored tracks built for equipment owners, labor mukadams, and aspiring rural entrepreneurs.
             </p>
-            <span className="text-primary font-bold text-sm shrink-0">{formatAmount(booking.amount)}</span>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {PARTNER_TRACKS.map((track, idx) => {
+              const Icon = track.icon
+              return (
+                <ScrollReveal key={track.title} delay={idx * 100}>
+                  <div className="flex flex-col justify-between p-6 sm:p-7 rounded-2xl bg-[#fafafa] dark:bg-zinc-900 border border-border/80 shadow-xs hover:shadow-md transition-all h-full space-y-6">
+                    <div className="space-y-4">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                        <Icon className="w-6 h-6" />
+                      </div>
+
+                      <div>
+                        <h3 className="text-xl font-bold text-foreground">
+                          {track.title}
+                        </h3>
+                        <p className="text-xs font-semibold text-primary mt-1">
+                          {track.tagline}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
+                          {track.description}
+                        </p>
+                      </div>
+
+                      <div className="pt-3 border-t border-border space-y-2">
+                        {track.benefits.map((b, i) => (
+                          <div key={i} className="flex items-start gap-2 text-xs text-foreground/85">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                            <span>{b}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-4 border-t border-border space-y-3">
+                      <p className="text-xs text-muted-foreground">
+                        <span className="font-semibold text-foreground">Earning Potential: </span>
+                        <span className="font-bold text-primary block mt-0.5">{track.earningEstimate}</span>
+                      </p>
+
+                      <Link
+                        href="/contact?intent=partner"
+                        className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#1a4570] hover:bg-[#153759] text-white text-xs font-semibold transition-colors shadow-xs"
+                      >
+                        <span>Join as {track.title.split(" ")[0]} Partner</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </ScrollReveal>
+              )
+            })}
           </div>
         </div>
-        <span className="material-symbols-outlined text-muted/40 group-hover:text-green-500 transition-colors self-center hidden sm:block">
-          chevron_right
-        </span>
-      </div>
-    </button>
-  )
-}
+      </section>
 
+      {/* 3. Onboarding Steps */}
+      <section className="py-14 sm:py-20 bg-[#f8f7f6] dark:bg-zinc-900/40 border-t border-border">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollReveal className="text-center max-w-xl mx-auto mb-10 space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+              Three Simple Steps to Get Started
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              From online submission to active cluster listing in under 48 hours.
+            </p>
+          </ScrollReveal>
 
-// ─── Booking Detail Modal ──────────────────────────────
-function BookingDetailModal({
-  booking,
-  onClose,
-  onScheduledAction,
-  onInstantAction,
-  onJobAction,
-  actionLoading,
-  formatAmount,
-  formatDate,
-  formatExpiry,
-}: {
-  booking: DashboardBooking
-  onClose: () => void
-  onScheduledAction: (id: string, action: "accept" | "reject") => void
-  onInstantAction: (id: number, action: "accept" | "decline") => void
-  onJobAction: (id: string, action: "start" | "complete", otp?: string) => void
-  actionLoading: string | null
-  formatAmount: (a: string | number) => string
-  formatDate: (d: string) => string
-  formatExpiry: (e: string | null) => string | null
-}) {
-  const { t } = useLanguage()
-  const [otp, setOtp] = useState("")
-  const [detail, setDetail] = useState<{
-    customer?: { phone_number: string; full_name: string }
-    start_job_otp?: string
-    end_job_otp?: string
-    work_started_at?: string
-    work_completed_at?: string
-  } | null>(null)
-  const isActioning = actionLoading !== null
-  const expiry = formatExpiry(booking.expires_at)
-
-  const isWaiting = booking.status === "PENDING"
-  const isConfirmed = booking.status === "CONFIRMED"
-  const isInProgress = booking.status === "IN_PROGRESS"
-  const isRejected = booking.status === "REJECTED"
-
-  // Fetch full details when modal opens (for OTP, customer info, etc.)
-  useEffect(() => {
-    if (!booking.booking_id) return
-    if (isWaiting && booking.type === "instant") return // instant requests don't have detail endpoint yet
-    const fetchDetail = async () => {
-      try {
-        const res = await fetch(`/api/partner/bookings/${booking.booking_id}`)
-        if (res.ok) {
-          const data = await res.json()
-          setDetail(data)
-        }
-      } catch { /* ignore — list data is sufficient fallback */ }
-    }
-    fetchDetail()
-  }, [booking.booking_id, booking.type, isWaiting])
-
-  const customerName = detail?.customer
-    ? detail.customer.full_name || "Customer"
-    : null
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-
-      {/* Panel */}
-      <div className="relative bg-card w-full sm:max-w-md max-h-[85vh] overflow-y-auto rounded-t-3xl sm:rounded-2xl shadow-2xl animate-in slide-in-from-bottom duration-300">
-        {/* Header */}
-        <div className="sticky top-0 bg-card z-10 px-4 sm:px-5 pt-4 pb-3 border-b border-border">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className={`size-9 rounded-lg flex items-center justify-center shrink-0 ${isWaiting ? "bg-amber-50 text-amber-600" :
-                isConfirmed ? "bg-green-50 text-success" :
-                  isInProgress ? "bg-blue-50 text-blue-600" :
-                    "bg-red-50 text-red-500"
-                }`}>
-                <span className="material-symbols-outlined text-lg">
-                  {isWaiting ? "schedule" : isConfirmed ? "check_circle" : isInProgress ? "engineering" : "block"}
-                </span>
-              </div>
-              <div className="min-w-0">
-                <h2 className="text-base font-bold text-foreground truncate">{booking.service_title}</h2>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${booking.booking_type === "INSTANT"
-                    ? "bg-purple-100 text-purple-700"
-                    : "bg-blue-100 text-blue-700"
-                    }`}>
-                    {booking.booking_type === "INSTANT" ? t("booking_type.INSTANT") : `📅 ${t("booking_type.SCHEDULED")}`}
-                  </span>
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${isWaiting ? "bg-amber-100 text-amber-700" :
-                    isConfirmed ? "bg-green-100 text-green-700" :
-                      isInProgress ? "bg-blue-100 text-blue-700" :
-                        "bg-red-100 text-red-700"
-                    }`}>
-                    {t(`status.${booking.status}`)}
-                  </span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {ONBOARDING_STEPS.map((step, idx) => (
+              <ScrollReveal key={step.num} delay={idx * 80}>
+                <div className="p-6 rounded-2xl bg-card border border-border text-center flex flex-col items-center h-full space-y-3 shadow-xs hover:shadow-md transition-all">
+                  <div className="w-10 h-10 rounded-full bg-primary text-white font-bold text-sm flex items-center justify-center shadow-xs">
+                    {step.num}
+                  </div>
+                  <h3 className="text-base font-bold text-foreground">
+                    {step.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {step.desc}
+                  </p>
                 </div>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="size-8 rounded-full bg-background flex items-center justify-center hover:bg-muted/20 transition-colors shrink-0"
-            >
-              <span className="material-symbols-outlined text-lg">close</span>
-            </button>
+              </ScrollReveal>
+            ))}
           </div>
         </div>
-
-        {/* Body */}
-        <div className="px-4 sm:px-5 py-4 space-y-3">
-          {/* Expiry Warning */}
-          {isWaiting && expiry && expiry !== "Expired" && (
-            <div className="flex items-center gap-2 p-2.5 bg-amber-50 rounded-xl border border-amber-100">
-              <span className="material-symbols-outlined text-amber-600 text-base">timer</span>
-              <p className="text-sm font-medium text-amber-800">{t("dashboard.expires_in").replace("{time}", expiry)}</p>
-            </div>
-          )}
-
-          {/* Booking ID + Order Number — compact row */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-background rounded-lg">
-              <span className="text-[10px] text-muted uppercase tracking-wide">ID</span>
-              <span className="text-xs font-mono font-bold text-foreground">{booking.booking_id}</span>
-            </div>
-            {booking.order_number && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-background rounded-lg">
-                <span className="text-[10px] text-muted uppercase tracking-wide">Order</span>
-                <span className="text-xs font-mono font-bold text-foreground">{booking.order_number}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Compact Pricing Row */}
-          <div className="flex items-center justify-between p-3 bg-primary/5 rounded-xl border border-primary/10">
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary text-lg">payments</span>
-              <span className="text-sm text-foreground">
-                {formatAmount(booking.unit_price)} × {booking.quantity} {t(`unit.${booking.price_unit}`) === `unit.${booking.price_unit}` ? PRICE_UNIT_LABELS[booking.price_unit] || booking.price_unit : t(`unit.${booking.price_unit}`)}
-              </span>
-            </div>
-            <span className="text-base font-bold text-primary">{formatAmount(booking.amount)}</span>
-          </div>
-
-          {/* Distance */}
-          {booking.distance_km && (
-            <div className="flex items-center gap-2.5 p-2.5 bg-blue-50 rounded-xl border border-blue-100">
-              <span className="material-symbols-outlined text-blue-600 text-base">distance</span>
-              <p className="text-sm font-semibold text-blue-800">{Number(booking.distance_km).toFixed(1)} km {t("dashboard.away")}</p>
-            </div>
-          )}
-
-          {/* Customer Name (from detail fetch) */}
-          {customerName && (isConfirmed || isInProgress) && (
-            <div className="flex items-center gap-2.5 p-2.5 bg-background rounded-xl">
-              <span className="material-symbols-outlined text-foreground/60 text-base">person</span>
-              <p className="text-sm font-semibold text-foreground">{customerName}</p>
-            </div>
-          )}
-
-          {/* Schedule — only show for WAITING bookings, not confirmed/in-progress */}
-          {isWaiting && (booking.scheduled_date || booking.scheduled_time) && (
-            <div className="flex items-center gap-2.5 p-2.5 bg-background rounded-xl">
-              <span className="material-symbols-outlined text-foreground/60 text-base">event</span>
-              <p className="text-sm text-foreground">
-                {booking.scheduled_date && <span className="font-semibold">{booking.scheduled_date}</span>}
-                {booking.scheduled_date && booking.scheduled_time && <span className="text-muted mx-1">•</span>}
-                {booking.scheduled_time && <span className="font-semibold">{booking.scheduled_time}</span>}
-              </p>
-            </div>
-          )}
-
-          {/* Location */}
-          {booking.address && (
-            <div className="flex items-start gap-2.5 p-2.5 bg-background rounded-xl">
-              <span className="material-symbols-outlined text-foreground/60 text-base mt-0.5">location_on</span>
-              <p className="text-sm text-foreground flex-1">{booking.address}</p>
-            </div>
-          )}
-
-          {/* Notes */}
-          {booking.note && (
-            <div className="flex items-start gap-2.5 p-2.5 bg-background rounded-xl">
-              <span className="material-symbols-outlined text-foreground/60 text-base mt-0.5">note</span>
-              <p className="text-sm text-foreground italic flex-1">{booking.note}</p>
-            </div>
-          )}
-
-          {/* Rejection Reason */}
-          {isRejected && booking.cancellation_reason && (
-            <div className="flex items-start gap-2.5 p-2.5 bg-red-50 rounded-xl border border-red-100">
-              <span className="material-symbols-outlined text-red-500 text-base mt-0.5">info</span>
-              <div>
-                <p className="text-xs font-bold text-red-800">{t("dashboard.rejection_reason")}</p>
-                <p className="text-sm text-red-700 mt-0.5">{booking.cancellation_reason}</p>
-              </div>
-            </div>
-          )}
-
-          {/* ─── Quick Actions for Accepted Bookings ─── */}
-          {(isConfirmed || isInProgress) && (
-            <div className="grid grid-cols-2 gap-2">
-              {/* Contact Customer */}
-              <a
-                href={`tel:${booking.customer_phone}`}
-                className="flex items-center justify-center gap-2 p-3 bg-green-50 rounded-xl border border-green-100 hover:bg-green-100 transition-colors"
-              >
-                <span className="material-symbols-outlined text-xl text-green-600">call</span>
-                <span className="text-xs font-bold text-green-800">{t("dashboard.contact")}</span>
-              </a>
-
-              {/* See Direction */}
-              {booking.lat && booking.lng && (
-                <a
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${booking.lat},${booking.lng}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 p-3 bg-blue-50 rounded-xl border border-blue-100 hover:bg-blue-100 transition-colors"
-                >
-                  <span className="material-symbols-outlined text-xl text-blue-600">directions</span>
-                  <span className="text-xs font-bold text-blue-800">{t("dashboard.see_direction")}</span>
-                </a>
-              )}
-            </div>
-          )}
-
-          {/* ─── OTP Entry for Start/Complete ─── */}
-          {(isConfirmed || isInProgress) && (
-            <div className="bg-background rounded-xl p-3 space-y-2.5">
-              <p className="text-xs text-muted">
-                {isConfirmed
-                  ? t("dashboard.start_job_desc")
-                  : t("dashboard.complete_job_desc")}
-              </p>
-              <input
-                type="text"
-                maxLength={6}
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                placeholder={t("dashboard.enter_otp")}
-                className="w-full h-11 px-4 text-center text-lg font-mono font-bold rounded-xl border border-border bg-card tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-primary/30"
-              />
-              <button
-                disabled={otp.length < 4 || isActioning}
-                onClick={() => {
-                  if (isConfirmed) onJobAction(booking.booking_id, "start", otp)
-                  else onJobAction(booking.booking_id, "complete", otp)
-                }}
-                className={`w-full h-10 rounded-xl font-bold text-sm transition-all disabled:opacity-50 ${isConfirmed
-                  ? "bg-blue-600 text-white hover:bg-blue-700"
-                  : "bg-green-600 text-white hover:bg-green-700"
-                  }`}
-              >
-                {isActioning ? (
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
-                ) : isConfirmed ? (
-                  t("dashboard.start_job")
-                ) : (
-                  t("dashboard.mark_completed")
-                )}
-              </button>
-            </div>
-          )}
-          <div className="h-6 sm:h-0" /> {/* Extra spacing for mobile */}
-        </div>
-
-        {/* ─── Footer Actions ─── */}
-        {isWaiting && (
-          <div className="sticky bottom-0 bg-card border-t border-border px-4 sm:px-5 py-3 pb-8 sm:pb-3">
-            <div className="flex gap-3">
-              {booking.type === "instant" && booking.instant_request_id ? (
-                <>
-                  <button
-                    disabled={isActioning}
-                    onClick={() => onInstantAction(booking.instant_request_id!, "decline")}
-                    className="flex-1 h-10 rounded-xl border border-border text-muted font-bold text-sm hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all disabled:opacity-50"
-                  >
-                    {t("dashboard.decline")}
-                  </button>
-                  <button
-                    disabled={isActioning}
-                    onClick={() => onInstantAction(booking.instant_request_id!, "accept")}
-                    className="flex-1 h-10 rounded-xl bg-primary text-white font-bold text-sm shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50"
-                  >
-                    {isActioning ? (
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
-                    ) : (
-                      t("dashboard.accept")
-                    )}
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    disabled={isActioning}
-                    onClick={() => onScheduledAction(booking.booking_id, "reject")}
-                    className="flex-1 h-10 rounded-xl border border-border text-muted font-bold text-sm hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all disabled:opacity-50"
-                  >
-                    {t("dashboard.reject")}
-                  </button>
-                  <button
-                    disabled={isActioning}
-                    onClick={() => onScheduledAction(booking.booking_id, "accept")}
-                    className="flex-1 h-10 rounded-xl bg-primary text-white font-bold text-sm shadow-sm hover:bg-primary/90 transition-all disabled:opacity-50"
-                  >
-                    {isActioning ? (
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
-                    ) : (
-                      t("dashboard.accept")
-                    )}
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+      </section>
     </div>
   )
 }
-

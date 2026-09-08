@@ -1,52 +1,44 @@
-import { BottomNav } from "@/components/bottom-nav"
-import { DesktopHeader } from "@/components/desktop-header"
-import { MobileHeader } from "@/components/mobile-header"
-import { ServiceTabs } from "@/components/service-tabs"
-import { API_ENDPOINTS, type Category } from "@/lib/api"
+import React from "react"
+import type { Metadata } from "next"
+import { HeroCarousel } from "@/components/sections/hero-carousel"
+import { MachineryShowcase } from "@/components/sections/machinery-showcase"
+import { LaborShowcase } from "@/components/sections/labor-showcase"
+import { VideoSection } from "@/components/sections/video-section"
+import { KnowledgeBitePreview } from "@/components/sections/knowledge-bite-preview"
+import { PartnerCta } from "@/components/sections/partner-cta"
 
-async function getCategories(): Promise<Category[]> {
-  try {
-    const res = await fetch(API_ENDPOINTS.CATEGORIES, {
-      next: { revalidate: 60 },
-    })
-    if (!res.ok) return []
-    const data = await res.json()
-    return data.results || data
-  } catch {
-    return []
-  }
+export const metadata: Metadata = {
+  title: "Farmo — Agricultural Mechanization & Farm Labor On Demand",
+  description:
+    "Farmo connects farmers with verified tractors, combine harvesters, drone sprayers, and skilled agricultural labors through rapid-dispatch rural working clusters.",
 }
 
-export default async function HomePage() {
-  const categories = await getCategories()
-
+export default function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Farmo",
-    "url": "https://farmo.in",
-    "description": "Find machinery and labour at your doorstep with Farmo.",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://farmo.in/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
+    "@type": "Organization",
+    name: "Farmo",
+    url: "https://farmo.in",
+    logo: "https://farmo.in/farmo-logo.png",
+    description:
+      "Farmo is India's agricultural mechanization and skilled labor platform connecting farmers with tractors, combine harvesters, and verified farm workforce.",
+    sameAs: [
+      "https://play.google.com/store/apps/details?id=com.farmoapp",
+    ],
   }
 
   return (
-    <div className="flex flex-col min-h-screen pb-24 lg:pb-0 bg-background">
+    <div className="flex flex-col w-full min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <DesktopHeader variant="farmer" />
-      <MobileHeader />
-
-      <main className="flex-1 lg:max-w-7xl lg:mx-auto lg:w-full">
-        <ServiceTabs categories={categories} />
-      </main>
-
-      <BottomNav variant="farmer" />
+      <HeroCarousel />
+      <MachineryShowcase />
+      <LaborShowcase />
+      <VideoSection />
+      <KnowledgeBitePreview />
+      <PartnerCta />
     </div>
   )
 }

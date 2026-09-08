@@ -1,37 +1,37 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
-import { AuthProvider } from "@/contexts/auth-context"
-import { LanguageProvider } from "@/contexts/language-context"
-import { LanguagePicker } from "@/components/language-picker"
-import { PwaInstallPrompt } from "@/components/pwa-install-prompt"
-import { PermissionProvider } from "@/contexts/permission-context"
+import { Navbar } from "@/components/layout/navbar"
+import { Footer } from "@/components/layout/footer"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ 
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   title: {
-    default: "Farmo - Farm Equipment & Services Rental | farmo.in",
+    default: "Farmo — Agricultural Mechanization & Farm Labor Platform",
     template: "%s | Farmo",
   },
   description:
-    "Find machinery and labour at your doorstep. Book trusted farm services quickly with Farmo.",
+    "Farmo connects farmers with verified tractors, combine harvesters, agricultural implements, and skilled farm labors across rural working clusters in India.",
   metadataBase: new URL("https://farmo.in"),
   keywords: [
+    "Farmo",
     "farm equipment rental",
-    "tractor rental",
-    "harvester rental",
-    "farm services",
-    "agriculture equipment",
-    "farmo",
-    "rotavator",
-    "farm machinery",
-    "kisan services",
-    "farming India",
+    "tractor rental India",
+    "agricultural machinery",
+    "farm labor hire",
+    "combine harvester rental",
+    "rural working clusters",
+    "agritech India",
+    "kisan machinery booking",
+    "drone sprayer rental",
   ],
-  authors: [{ name: "Farmo" }],
+  authors: [{ name: "Farmo Technologies" }],
   creator: "Farmo",
   publisher: "Farmo",
   openGraph: {
@@ -39,39 +39,33 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: "https://farmo.in",
     siteName: "Farmo",
-    title: "Farmo - Farm Equipment & Services Rental",
+    title: "Farmo — Agricultural Mechanization & Farm Labor Platform",
     description:
-      "Find machinery and labour at your doorstep with Farmo.",
+      "Find reliable machinery and skilled agricultural labors at your doorstep with Farmo.",
+    images: [
+      {
+        url: "/farmo-logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Farmo — Farm Equipment & Labor Platform",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Farmo - Farm Equipment & Services Rental",
+    title: "Farmo — Agricultural Mechanization & Farm Labor Platform",
     description:
-      "Find machinery and labour at your doorstep with Farmo.",
+      "Find reliable machinery and skilled agricultural labors at your doorstep with Farmo.",
+    images: ["/farmo-logo.png"],
   },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/farmo-icon.ico", type: "image/x-icon" },
+      { url: "/favicon.ico", type: "image/x-icon" },
     ],
-    shortcut: ["/farmo-icon.ico"],
     apple: [
-      { url: "/farmo%20mobile%20logo.png", type: "image/png" },
+      { url: "/farmo mobile logo.png", type: "image/png" },
     ],
-  },
-  alternates: {
-    canonical: "https://farmo.in",
   },
 }
 
@@ -79,7 +73,6 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  userScalable: true,
   themeColor: "#1a4570",
 }
 
@@ -89,27 +82,11 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <head>
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        />
-      </head>
-      <body className={`font-sans antialiased min-h-screen bg-muted/30`}>
-        <LanguageProvider>
-          <PermissionProvider>
-            <AuthProvider>
-              {/* Mobile: constrained width, Desktop: full width */}
-              <div className="mx-auto lg:max-w-none max-w-md min-h-screen bg-background lg:bg-transparent relative">
-                {children}
-              </div>
-            </AuthProvider>
-          </PermissionProvider>
-          <LanguagePicker />
-          <PwaInstallPrompt />
-        </LanguageProvider>
-        <Analytics />
+    <html lang="en" className={inter.variable}>
+      <body className="font-sans antialiased min-h-screen bg-background text-foreground flex flex-col selection:bg-primary/20 selection:text-primary">
+        <Navbar />
+        <main className="flex-1 w-full">{children}</main>
+        <Footer />
       </body>
     </html>
   )
