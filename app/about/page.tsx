@@ -49,7 +49,7 @@ export default function AboutPage() {
     <div className="flex flex-col w-full min-h-screen">
       
       {/* 1. Hero Banner - Full Screen Viewport Height with AI Image */}
-      <section className="relative isolate flex min-h-[calc(100svh-64px)] flex-col justify-end items-center overflow-hidden bg-black pb-6 sm:pb-8 pt-16 border-b border-border">
+      <section className="relative isolate flex min-h-[430px] md:min-h-[520px] flex-col justify-end overflow-hidden bg-foreground py-14 md:py-20 border-b border-border">
         <Image
           src="/about-mission-hero.jpg"
           alt="Farmo Agricultural Mechanization Revolution"
@@ -58,18 +58,18 @@ export default function AboutPage() {
           className="object-cover object-center"
         />
         {/* Clean bottom gradient for text contrast while keeping farmer, tractor, and landscape completely visible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 via-25% to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
 
-        <ScrollReveal className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pb-2">
+        <ScrollReveal className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-left">
           <div className="space-y-3 sm:space-y-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold text-white tracking-tight leading-snug max-w-4xl mx-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium text-white tracking-tight leading-[1.08] max-w-3xl">
               Democratizing Farm Mechanization Across Bharat
             </h1>
 
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <div className="flex flex-wrap items-center justify-start gap-3 pt-4">
               <Link
                 href="/working-clusters"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm font-semibold shadow-xl transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-md bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-colors"
               >
                 <span>Explore Working Clusters</span>
                 <ArrowRight className="w-4 h-4" />
@@ -77,7 +77,7 @@ export default function AboutPage() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/20 text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-md bg-transparent hover:bg-white/10 text-white border border-white/60 text-sm font-semibold transition-colors"
               >
                 <span>Get in Touch</span>
               </Link>
@@ -87,7 +87,7 @@ export default function AboutPage() {
       </section>
 
       {/* 2. Origin Story Grid */}
-      <section className="py-16 sm:py-24 bg-white dark:bg-zinc-950">
+      <section className="py-16 sm:py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
@@ -95,7 +95,7 @@ export default function AboutPage() {
               <span className="text-xs uppercase font-bold text-primary tracking-wider">
                 Why We Built Farmo
               </span>
-              <h2 className="text-2xl sm:text-4xl font-extrabold text-foreground leading-tight">
+              <h2 className="text-2xl sm:text-4xl font-serif font-medium text-foreground leading-tight">
                 Bridging the Gap Between Idle Equipment and Unharvested Fields
               </h2>
               <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
@@ -140,13 +140,13 @@ export default function AboutPage() {
       </section>
 
       {/* 3. Core Values */}
-      <section className="py-16 sm:py-20 bg-[#f8f7f6] dark:bg-zinc-900/40 border-y border-border">
+      <section className="py-16 sm:py-20 bg-muted/30 border-y border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal className="text-center max-w-2xl mx-auto mb-14 space-y-2">
             <span className="text-xs uppercase font-bold text-primary tracking-wider">
               Guiding Principles
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+            <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground">
               What We Stand For at Farmo
             </h2>
           </ScrollReveal>
@@ -156,7 +156,7 @@ export default function AboutPage() {
               const Icon = val.icon
               return (
                 <ScrollReveal key={val.title} delay={idx * 80}>
-                  <div className="p-6 rounded-3xl bg-card border border-border shadow-xs flex flex-col justify-between h-full hover:shadow-md transition-all">
+                  <div className="p-6 border-t border-border flex flex-col justify-between h-full pt-6">
                     <div>
                       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
                         <Icon className="w-5 h-5" />
@@ -177,9 +177,9 @@ export default function AboutPage() {
       </section>
 
       {/* 4. CTA Footer */}
-      <section className="py-16 bg-white dark:bg-zinc-950 text-center">
+      <section className="py-16 bg-background text-center">
         <ScrollReveal className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+          <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground">
             Join the Farmo Movement Today
           </h2>
           <p className="text-sm text-muted-foreground max-w-xl mx-auto">

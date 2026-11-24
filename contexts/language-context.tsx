@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, useCallback, type React
 import enTranslations from "@/lib/translations/en.json"
 import mrTranslations from "@/lib/translations/mr.json"
 
-type Language = "en" | "mr"
+export type Language = "en" | "mr"
 type Translations = Record<string, string>
 
 const translationMap: Record<Language, Translations> = {

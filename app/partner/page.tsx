@@ -3,13 +3,13 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { 
-  Handshake, 
-  Tractor, 
-  Users, 
-  MapPin, 
-  CheckCircle2, 
-  ArrowRight, 
+import {
+  Handshake,
+  Tractor,
+  Users,
+  MapPin,
+  CheckCircle2,
+  ArrowRight,
   Sparkles,
 } from "lucide-react"
 
@@ -83,7 +83,7 @@ export default function PartnerPage() {
   return (
     <div className="flex flex-col w-full min-h-screen">
       {/* 1. Hero Header Banner - Full Viewport Height with AI Image */}
-      <section className="relative isolate flex min-h-[calc(100svh-64px)] flex-col justify-end items-center overflow-hidden bg-black pb-6 sm:pb-8 pt-16 border-b border-border">
+      <section className="relative isolate flex min-h-[430px] md:min-h-[520px] flex-col justify-end overflow-hidden bg-foreground py-14 md:py-20 border-b border-border">
         <Image
           src="/partner-hero-banner.jpg"
           alt="Farmo Rural Partnership Network"
@@ -92,25 +92,25 @@ export default function PartnerPage() {
           className="object-cover object-center"
         />
         {/* Clean bottom gradient for text contrast while keeping partners and tractor workshop completely visible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 via-25% to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
 
-        <ScrollReveal className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pb-2">
+        <ScrollReveal className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-left">
           <div className="space-y-3 sm:space-y-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold text-white tracking-tight leading-snug max-w-4xl mx-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium text-white tracking-tight leading-[1.08] max-w-3xl">
               Grow Your Farm Service Business with Farmo
             </h1>
 
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <div className="flex flex-wrap items-center justify-start gap-3 pt-4">
               <Link
                 href="/contact?intent=partner"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm font-semibold shadow-xl transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-md bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-colors"
               >
                 <span>Apply for Partnership</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <a
                 href="#partner-tracks"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/20 text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-md bg-transparent hover:bg-white/10 text-white border border-white/60 text-sm font-semibold transition-colors"
               >
                 <span>Explore Partner Tracks</span>
               </a>
@@ -120,28 +120,25 @@ export default function PartnerPage() {
       </section>
 
       {/* Clean Trust Bar below Hero Image */}
-      <div className="w-full bg-white dark:bg-zinc-950 border-b border-border py-4 px-4">
-        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-foreground/80 font-medium">
+      <div className="w-full bg-background border-b border-border py-4 px-4">
+        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-start gap-x-8 gap-y-2 text-sm text-foreground/80 font-medium">
           <span className="inline-flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             Zero Listing Fees
           </span>
           <span className="inline-flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             Prompt &amp; Transparent Payouts
           </span>
           <span className="inline-flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             Localized Cluster Support
           </span>
         </div>
       </div>
 
       {/* 2. Choose your partnership path */}
-      <section id="partner-tracks" className="py-14 sm:py-20 bg-white dark:bg-zinc-950">
+      <section id="partner-tracks" className="py-14 sm:py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ScrollReveal className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+          <ScrollReveal className="max-w-2xl mb-10 space-y-2">
+            <h2 className="text-2xl sm:text-4xl font-serif font-medium text-foreground tracking-tight">
               Choose Your Partnership Path
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -205,10 +202,10 @@ export default function PartnerPage() {
       </section>
 
       {/* 3. Onboarding Steps */}
-      <section className="py-14 sm:py-20 bg-[#f8f7f6] dark:bg-zinc-900/40 border-t border-border">
+      <section className="py-14 sm:py-20 bg-muted/30 border-t border-border">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal className="text-center max-w-xl mx-auto mb-10 space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+            <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground">
               Three Simple Steps to Get Started
             </h2>
             <p className="text-xs text-muted-foreground">

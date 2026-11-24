@@ -264,7 +264,7 @@ export function MachineryView() {
   return (
     <div className="flex flex-col w-full min-h-screen">
       {/* 1. Hero Header Banner - Full Screen Viewport Height with AI Image */}
-      <section className="relative isolate flex min-h-[calc(100svh-64px)] flex-col justify-end items-center overflow-hidden bg-black pb-6 sm:pb-8 pt-16 border-b border-border">
+      <section className="relative isolate flex min-h-[430px] md:min-h-[520px] flex-col justify-end overflow-hidden bg-foreground py-14 md:py-20 border-b border-border">
         <Image
           src="/machinery-hero-banner.jpg"
           alt="Farmo Modern Agricultural Machinery Fleet"
@@ -273,18 +273,18 @@ export function MachineryView() {
           className="object-cover object-center"
         />
         {/* Clean bottom gradient for text contrast while keeping tractors and landscape completely visible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 via-25% to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
 
-        <ScrollReveal className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pb-2">
+        <ScrollReveal className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-left">
           <div className="space-y-3 sm:space-y-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold text-white tracking-tight leading-snug max-w-4xl mx-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium text-white tracking-tight leading-[1.08] max-w-3xl">
               Agricultural Machinery On Demand for Every Indian Farmer
             </h1>
 
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <div className="flex flex-wrap items-center justify-start gap-3 pt-4">
               <a
                 href="#machinery-types"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm font-semibold shadow-xl transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-md bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-colors"
               >
                 <span>Explore Machinery Types</span>
                 <ArrowRight className="w-4 h-4" />
@@ -292,7 +292,7 @@ export function MachineryView() {
 
               <Link
                 href="/partner"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/20 text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-md bg-transparent hover:bg-white/10 text-white border border-white/60 text-sm font-semibold transition-colors"
               >
                 <Tractor className="w-4 h-4" />
                 <span>Become a Partner (List Machinery)</span>
@@ -300,7 +300,7 @@ export function MachineryView() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/20 text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-md bg-transparent hover:bg-white/10 text-white border border-white/60 text-sm font-semibold transition-colors"
               >
                 <PhoneCall className="w-4 h-4 text-primary" />
                 <span>Contact Cluster Hub</span>
@@ -310,183 +310,16 @@ export function MachineryView() {
         </ScrollReveal>
       </section>
 
-      {/* Clean Trust Bar below Hero Image */}
-      <div className="w-full bg-white dark:bg-zinc-950 border-b border-border py-4 px-4">
-        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-foreground/80 font-medium">
-          <span className="inline-flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            Local working-cluster network
-          </span>
-          <span className="inline-flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            App &amp; Local Cluster Coordinator
-          </span>
-          <span className="inline-flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-            Direct &amp; Fair Partner Payouts
-          </span>
-        </div>
-      </div>
-
-      {/* 2. How Farmo Machinery Works (Collaborative Ecosystem Workflow) */}
-      <section className="py-14 sm:py-20 bg-white dark:bg-zinc-950 border-b border-border/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <ScrollReveal className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#1a4570]/10 text-[#1a4570] dark:text-sky-400 text-xs font-bold uppercase tracking-wider">
-              <Building2 className="w-3.5 h-3.5" />
-              <span>The Farmo Cluster Ecosystem</span>
-            </div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
-              How Farmo Machinery Works
-            </h2>
-            <p className="text-muted-foreground text-sm leading-relaxed">
-              A collaborative model connecting equipment partners with farmers through the Farmo App and our local Cluster Centers.
-            </p>
-          </ScrollReveal>
-
-          {/* Two-Sided Benefits: Partner vs Farmer */}
-          <ScrollReveal className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
-            {/* Left: Partner Advantages */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#1a4570]/5 via-card to-card border-2 border-[#1a4570]/20 shadow-sm flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1a4570] text-white text-xs font-bold uppercase tracking-wider">
-                  <Tractor className="w-3.5 h-3.5" />
-                  <span>Partner Advantages</span>
-                </div>
-
-                <h3 className="text-xl sm:text-2xl font-extrabold text-foreground">
-                  Why Machinery Owners Partner with Farmo
-                </h3>
-
-                <ul className="space-y-3.5 text-sm text-foreground/90">
-                  <li className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <strong className="text-foreground">List Services &amp; Expand Reach:</strong>{" "}
-                      <span className="text-muted-foreground text-xs block mt-0.5">
-                        Get your tractors and implements listed across Farmo's local network, reaching nearby farmers without marketing effort.
-                      </span>
-                    </div>
-                  </li>
-
-                  <li className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <strong className="text-foreground">Steady Bookings via App &amp; Cluster Manager:</strong>{" "}
-                      <span className="text-muted-foreground text-xs block mt-0.5">
-                        Eliminate costly idle machine days. Receive steady, verified booking demand directly via the partner app or our on-ground cluster manager.
-                      </span>
-                    </div>
-                  </li>
-
-                  <li className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <strong className="text-foreground">Direct &amp; Transparent Earnings:</strong>{" "}
-                      <span className="text-muted-foreground text-xs block mt-0.5">
-                        Receive payment directly from the farmer or via Farmo right upon job completion. Zero commissions deducted by middlemen.
-                      </span>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="pt-2">
-                <Link
-                  href="/partner"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1a4570] hover:bg-[#153a5e] text-white text-xs font-bold transition-all shadow-sm"
-                >
-                  <span>Register Equipment as a Partner</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Right: Farmer Advantages */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-primary/5 via-card to-card border-2 border-primary/20 shadow-sm flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary text-white text-xs font-bold uppercase tracking-wider">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Farmer Advantages</span>
-                </div>
-
-                <h3 className="text-xl sm:text-2xl font-extrabold text-foreground">
-                  Farmo as the Platform for Farmers
-                </h3>
-
-                <ul className="space-y-3.5 text-sm text-foreground/90">
-                  <li className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <strong className="text-foreground">Dual Booking Ease (App or Cluster Manager):</strong>{" "}
-                      <span className="text-muted-foreground text-xs block mt-0.5">
-                        Book machinery using the intuitive Farmo App or simply place a quick call to your local village cluster coordinator.
-                      </span>
-                    </div>
-                  </li>
-
-                  <li className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <strong className="text-foreground">Guaranteed On-Time Field Arrival:</strong>{" "}
-                      <span className="text-muted-foreground text-xs block mt-0.5">
-                        Machines are staged in a nearby working cluster, reducing travel delays during peak sowing or harvest.
-                      </span>
-                    </div>
-                  </li>
-
-                  <li className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                    </div>
-                    <div>
-                      <strong className="text-foreground">Save Lakhs on Equipment Capital:</strong>{" "}
-                      <span className="text-muted-foreground text-xs block mt-0.5">
-                        Access all machine types, implements, and combine harvesters at transparent hourly or acre rates without bank debt.
-                      </span>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="pt-2">
-                <a
-                  href="#machinery-types"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold transition-all shadow-sm"
-                >
-                  <span>Browse Machinery Types</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
-
-          </ScrollReveal>
-
-        </div>
-      </section>
-
       {/* 3. Machinery Types Cards Section */}
-      <section id="machinery-types" className="py-16 sm:py-24 bg-[#f8f7f6] dark:bg-zinc-900/40 border-b border-border/60">
+      <section id="machinery-types" className="py-16 sm:py-24 bg-muted/30 border-b border-border/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <ScrollReveal className="text-center max-w-2xl mx-auto mb-12 space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+
+          <ScrollReveal className="max-w-2xl mb-10 space-y-2">
+            <div className="inline-flex items-center gap-2 text-primary text-xs font-semibold uppercase tracking-wider">
               <Tractor className="w-3.5 h-3.5" />
               <span>Available Machinery Types</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-serif font-medium text-foreground tracking-tight">
               Machinery Types on Demand
             </h2>
             <p className="text-sm text-muted-foreground">
@@ -503,7 +336,7 @@ export function MachineryView() {
                 >
                 {/* Illustration Container */}
                 <div className="relative w-full h-44 bg-white dark:bg-zinc-900 border-b border-border/60 p-4 flex items-center justify-center">
-                  
+
                   {/* Top Left: Arrival Time Badge */}
                   <div className="absolute top-3 left-3 z-10">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 shadow-xs">
@@ -582,16 +415,180 @@ export function MachineryView() {
         </div>
       </section>
 
+      {/* Clean Trust Bar below Hero Image */}
+      <div className="w-full bg-background border-b border-border py-4 px-4">
+        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-start gap-x-8 gap-y-2 text-sm text-foreground/80 font-medium">
+          <span className="inline-flex items-center gap-2">
+            Local working-cluster network
+          </span>
+          <span className="inline-flex items-center gap-2">
+            App &amp; Local Cluster Coordinator
+          </span>
+          <span className="inline-flex items-center gap-2">
+            Direct &amp; Fair Partner Payouts
+          </span>
+        </div>
+      </div>
+
+      {/* 2. How Farmo Machinery Works (Collaborative Ecosystem Workflow) */}
+      <section className="py-14 sm:py-20 bg-background border-b border-border/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          <ScrollReveal className="max-w-2xl mb-10 space-y-2">
+            <div className="inline-flex items-center gap-2 text-primary text-xs font-semibold uppercase tracking-wider">
+              <Building2 className="w-3.5 h-3.5" />
+              <span>The Farmo Cluster Ecosystem</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-serif font-medium text-foreground tracking-tight">
+              How Farmo Machinery Works
+            </h2>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              A collaborative model connecting equipment partners with farmers through the Farmo App and our local Cluster Centers.
+            </p>
+          </ScrollReveal>
+
+          {/* Two-Sided Benefits: Partner vs Farmer */}
+          <ScrollReveal className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            {/* Left: Partner Advantages */}
+            <div className="p-6 sm:p-8 rounded-xl bg-card border border-border flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1a4570] text-white text-xs font-bold uppercase tracking-wider">
+                  <Tractor className="w-3.5 h-3.5" />
+                  <span>Partner Advantages</span>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-serif font-medium text-foreground">
+                  Why Machinery Owners Partner with Farmo
+                </h3>
+
+                <ul className="space-y-3.5 text-sm text-foreground/90">
+                  <li className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <strong className="text-foreground">List Services &amp; Expand Reach:</strong>{" "}
+                      <span className="text-muted-foreground text-xs block mt-0.5">
+                        Get your tractors and implements listed across Farmo's local network, reaching nearby farmers without marketing effort.
+                      </span>
+                    </div>
+                  </li>
+
+                  <li className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <strong className="text-foreground">Steady Bookings via App &amp; Cluster Manager:</strong>{" "}
+                      <span className="text-muted-foreground text-xs block mt-0.5">
+                        Eliminate costly idle machine days. Receive steady, verified booking demand directly via the partner app or our on-ground cluster manager.
+                      </span>
+                    </div>
+                  </li>
+
+                  <li className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <strong className="text-foreground">Direct &amp; Transparent Earnings:</strong>{" "}
+                      <span className="text-muted-foreground text-xs block mt-0.5">
+                        Receive payment directly from the farmer or via Farmo right upon job completion. Zero commissions deducted by middlemen.
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href="/partner"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#1a4570] hover:bg-[#153a5e] text-white text-xs font-bold transition-all shadow-sm"
+                >
+                  <span>Register Equipment as a Partner</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: Farmer Advantages */}
+            <div className="p-6 sm:p-8 rounded-xl bg-card border border-border flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary text-white text-xs font-bold uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Farmer Advantages</span>
+                </div>
+
+                <h3 className="text-xl sm:text-2xl font-serif font-medium text-foreground">
+                  Farmo as the Platform for Farmers
+                </h3>
+
+                <ul className="space-y-3.5 text-sm text-foreground/90">
+                  <li className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <strong className="text-foreground">Dual Booking Ease (App or Cluster Manager):</strong>{" "}
+                      <span className="text-muted-foreground text-xs block mt-0.5">
+                        Book machinery using the intuitive Farmo App or simply place a quick call to your local village cluster coordinator.
+                      </span>
+                    </div>
+                  </li>
+
+                  <li className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <strong className="text-foreground">Guaranteed On-Time Field Arrival:</strong>{" "}
+                      <span className="text-muted-foreground text-xs block mt-0.5">
+                        Machines are staged in a nearby working cluster, reducing travel delays during peak sowing or harvest.
+                      </span>
+                    </div>
+                  </li>
+
+                  <li className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <strong className="text-foreground">Save Lakhs on Equipment Capital:</strong>{" "}
+                      <span className="text-muted-foreground text-xs block mt-0.5">
+                        Access all machine types, implements, and combine harvesters at transparent hourly or acre rates without bank debt.
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-2">
+                <a
+                  href="#machinery-types"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white text-xs font-bold transition-all shadow-sm"
+                >
+                  <span>Browse Machinery Types</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
+
+          </ScrollReveal>
+
+        </div>
+      </section>
+
       {/* 4. Expandable FAQs Section */}
-      <section className="py-16 sm:py-24 bg-white dark:bg-zinc-950 border-t border-border">
+      <section className="py-16 sm:py-24 bg-background border-t border-border">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          
+
           <ScrollReveal className="text-center mb-12 space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-2 text-primary text-xs font-semibold uppercase tracking-wider">
               <HelpCircle className="w-3.5 h-3.5" />
               <span>Answers &amp; Clarity</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-serif font-medium text-foreground tracking-tight">
               Frequently Asked Questions
             </h2>
             <p className="text-sm text-muted-foreground max-w-xl mx-auto">
@@ -672,16 +669,16 @@ export function MachineryView() {
       </section>
 
       {/* 5. Bottom Partner CTA Banner */}
-      <section className="py-14 sm:py-20 bg-gradient-to-br from-[#1a4570] via-[#153a5e] to-[#0f2842] text-white">
+      <section className="py-14 sm:py-20 bg-primary text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto text-center space-y-5">
-            
+
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-bold uppercase tracking-wider">
               <Tractor className="w-3.5 h-3.5 text-primary" />
               <span>Partner with Farmo</span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-medium tracking-tight text-white leading-tight">
               Turn Your Idle Machinery into Daily Earnings
             </h2>
 

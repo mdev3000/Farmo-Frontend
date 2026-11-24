@@ -11,13 +11,13 @@ export const metadata: Metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <div className="w-full min-h-screen py-12 md:py-20 bg-background">
-      <div className="max-w-4xl mx-auto px-5 sm:px-6">
-        <ScrollReveal className="bg-card border border-border rounded-3xl p-6 sm:p-10 shadow-sm">
+      <div className="max-w-3xl mx-auto px-5 sm:px-6">
+        <ScrollReveal className="border-t border-border py-8">
           <div className="border-b border-border pb-6 mb-8">
             <span className="text-xs uppercase font-bold text-primary tracking-wider">
               Data Protection &amp; Trust
             </span>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground mt-1">
+            <h1 className="text-3xl sm:text-4xl font-serif font-medium text-foreground mt-1">
               Privacy Policy
             </h1>
             <p className="text-xs text-muted-foreground mt-2">
@@ -25,7 +25,7 @@ export default function PrivacyPolicyPage() {
             </p>
           </div>
 
-          <div className="space-y-8 text-foreground/90 text-sm leading-relaxed">
+          <div className="space-y-8 text-foreground/90 text-base leading-relaxed">
             <section>
               <h2 className="text-lg font-bold text-foreground mb-2">1. Introduction</h2>
               <p>

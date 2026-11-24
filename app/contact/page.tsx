@@ -4,13 +4,13 @@ import React, { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { 
-  PhoneCall, 
-  Mail, 
-  MapPin, 
-  MessageSquare, 
-  Send, 
-  CheckCircle2, 
+import {
+  PhoneCall,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Send,
+  CheckCircle2,
   Phone,
   Sparkles,
   ArrowRight,
@@ -29,13 +29,16 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.fullName || !formData.phoneNumber) return
+    const subject = encodeURIComponent(`Farmo inquiry: ${formData.interest}`)
+    const body = encodeURIComponent(`Name: ${formData.fullName}\nPhone: ${formData.phoneNumber}\nState / Region: ${formData.state}\nInterest: ${formData.interest}\n\n${formData.message}`)
+    window.location.href = `mailto:support@farmo.in?subject=${subject}&body=${body}`
     setSubmitted(true)
   }
 
   return (
     <div className="flex flex-col w-full min-h-screen">
       {/* 1. Hero Header Banner - Full Viewport Height with AI Image */}
-      <section className="relative isolate flex min-h-[calc(100svh-64px)] flex-col justify-end items-center overflow-hidden bg-black pb-6 sm:pb-8 pt-16 border-b border-border">
+      <section className="relative isolate flex min-h-[430px] md:min-h-[520px] flex-col justify-end overflow-hidden bg-foreground py-14 md:py-20 border-b border-border">
         <Image
           src="/contact-support-hub.jpg"
           alt="Farmo Operations Support Center"
@@ -44,18 +47,18 @@ export default function ContactPage() {
           className="object-cover object-center"
         />
         {/* Clean bottom gradient for text contrast while keeping support team and center completely visible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 via-25% to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
 
-        <ScrollReveal className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pb-2">
+        <ScrollReveal className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-left">
           <div className="space-y-3 sm:space-y-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold text-white tracking-tight leading-snug max-w-4xl mx-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium text-white tracking-tight leading-[1.08] max-w-3xl">
               Talk Directly with the Farmo Team
             </h1>
 
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <div className="flex flex-wrap items-center justify-start gap-3 pt-4">
               <a
                 href="tel:+919175877571"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm font-semibold shadow-xl transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-md bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-colors"
               >
                 <Phone className="w-4 h-4" />
                 <span>Call Helpline: +91-9175877571</span>
@@ -73,7 +76,7 @@ export default function ContactPage() {
 
               <a
                 href="#inquiry-form"
-                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/20 text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-md bg-transparent hover:bg-white/10 text-white border border-white/60 text-sm font-semibold transition-colors"
               >
                 <span>Send Online Inquiry</span>
                 <ArrowRight className="w-4 h-4" />
@@ -84,35 +87,32 @@ export default function ContactPage() {
       </section>
 
       {/* Clean Helpline Timing Bar below Hero Image */}
-      <div className="w-full bg-white dark:bg-zinc-950 border-b border-border py-4 px-4">
-        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm text-foreground/80 font-medium">
+      <div className="w-full bg-background border-b border-border py-4 px-4">
+        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-start gap-x-8 gap-y-2 text-sm text-foreground/80 font-medium">
           <span className="inline-flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             Helpline Hours: Daily, 6:00 AM – 9:00 PM
           </span>
           <span className="inline-flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             Sub-30 Min Callback Time
           </span>
           <span className="inline-flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             On-Ground Cluster Assistance
           </span>
         </div>
       </div>
 
       {/* 2. Direct Contacts & Inquiry Form */}
-      <section id="inquiry-form" className="py-14 sm:py-20 bg-white dark:bg-zinc-950 flex-1">
+      <section id="inquiry-form" className="py-14 sm:py-20 bg-background flex-1">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            
+
             {/* Left Column: Direct Contacts */}
             <ScrollReveal className="lg:col-span-5 space-y-6">
               <div className="space-y-2">
                 <span className="text-xs uppercase font-bold text-primary tracking-wider">
                   Contact Channels
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+                <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground">
                   Reach Us Directly
                 </h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -194,10 +194,10 @@ export default function ContactPage() {
                       <CheckCircle2 className="w-10 h-10" />
                     </div>
                     <h3 className="text-2xl font-bold text-foreground">
-                      Inquiry Received!
+                      Your email draft is ready
                     </h3>
                     <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
-                      Thank you, <strong>{formData.fullName}</strong>. A Farmo Cluster Coordinator from your region will call you at <strong>{formData.phoneNumber}</strong> within 30 minutes.
+                      Please send the draft from your email app, or call the helpline if you prefer.
                     </p>
                     <button
                       type="button"
@@ -316,7 +316,7 @@ export default function ContactPage() {
                       className="w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm shadow-md transition-colors cursor-pointer"
                     >
                       <Send className="w-4 h-4" />
-                      <span>Submit Inquiry</span>
+                      <span>Continue to email</span>
                     </button>
                   </form>
                 )}

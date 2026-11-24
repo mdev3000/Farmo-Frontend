@@ -88,7 +88,7 @@ export default function KnowledgeBitePage() {
   return (
     <div className="flex flex-col w-full min-h-screen">
       {/* 1. Hero Header Banner - Full Viewport Height with AI Image */}
-      <section className="relative isolate flex min-h-[calc(100svh-64px)] flex-col justify-end items-center overflow-hidden bg-black pb-6 sm:pb-8 pt-16 border-b border-border">
+      <section className="relative isolate flex min-h-[430px] md:min-h-[520px] flex-col justify-end overflow-hidden bg-foreground py-14 md:py-20 border-b border-border">
         <Image
           src="/drone-spray-field.jpg"
           alt="Farmo Agritech Research & Knowledge"
@@ -97,11 +97,11 @@ export default function KnowledgeBitePage() {
           className="object-cover object-center"
         />
         {/* Clean bottom gradient for text contrast while keeping drone sprayer and field completely visible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 via-25% to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
 
-        <ScrollReveal className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pb-2">
+        <ScrollReveal className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-left">
           <div className="space-y-3 sm:space-y-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold text-white tracking-tight leading-snug max-w-4xl mx-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium text-white tracking-tight leading-[1.08] max-w-3xl">
               Practical Knowledge for Better Farm Decisions
             </h1>
 
@@ -120,7 +120,7 @@ export default function KnowledgeBitePage() {
       </section>
 
       {/* 2. Category Filters */}
-      <section className="py-4 bg-white dark:bg-zinc-950 border-b border-border/60 sticky top-16 z-20 shadow-2xs">
+      <section className="py-4 bg-background border-b border-border/60 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center gap-2 overflow-x-auto no-scrollbar py-1">
             {CATEGORIES.map((cat) => (
@@ -141,7 +141,7 @@ export default function KnowledgeBitePage() {
       </section>
 
       {/* 3. Articles Grid: Exactly 2 Featured Articles */}
-      <section className="py-12 sm:py-16 bg-[#f8f7f6] dark:bg-zinc-900/40 flex-1">
+      <section className="py-12 sm:py-16 bg-muted/30 flex-1">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           {filteredArticles.length === 0 ? (
             <div className="text-center py-16 bg-card rounded-2xl border border-border p-8 max-w-md mx-auto">
@@ -251,7 +251,7 @@ export default function KnowledgeBitePage() {
                 <span>•</span>
                 <span>{activeArticle.readTime}</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground leading-tight">
+              <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground leading-tight">
                 {activeArticle.title}
               </h2>
             </div>

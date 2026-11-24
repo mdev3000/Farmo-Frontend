@@ -68,7 +68,7 @@ export default function WorkingClustersPage() {
   return (
     <div className="flex flex-col w-full min-h-screen">
       {/* 1. Hero Section - Full Viewport Height with Crystal Clear Cluster Map */}
-      <section className="relative isolate flex min-h-[calc(100svh-64px)] flex-col justify-end items-center overflow-hidden bg-black pb-6 sm:pb-8 pt-16 border-b border-border">
+      <section className="relative isolate flex min-h-[430px] md:min-h-[520px] flex-col justify-end overflow-hidden bg-foreground py-14 md:py-20 border-b border-border">
         <Image
           src="/ravgaon-cluster-map.jpg"
           alt="Farmo Ravgaon Cluster Map"
@@ -77,25 +77,25 @@ export default function WorkingClustersPage() {
           className="object-cover object-center"
         />
         {/* Clean bottom gradient for text contrast while keeping cluster map fully visible */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 via-25% to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-black/20" />
 
-        <ScrollReveal className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pb-2">
+        <ScrollReveal className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 text-left">
           <div className="space-y-3 sm:space-y-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-extrabold text-white tracking-tight leading-snug max-w-4xl mx-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-medium text-white tracking-tight leading-[1.08] max-w-3xl">
               Farm operations, organized closer to the field
             </h1>
 
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+            <div className="flex flex-wrap items-center justify-start gap-3 pt-4">
               <a
                 href="#how-it-works"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm font-semibold shadow-xl transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-md bg-primary hover:bg-primary/90 text-white text-sm font-semibold transition-colors"
               >
                 <span>How Working Clusters Function</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-black/60 hover:bg-black/80 text-white border border-white/20 text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg transition-all hover:scale-105 active:scale-95"
+                className="inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-md bg-transparent hover:bg-white/10 text-white border border-white/60 text-sm font-semibold transition-colors"
               >
                 <PhoneCall className="w-4 h-4 text-primary" />
                 <span>Locate Nearest Cluster</span>
@@ -106,7 +106,7 @@ export default function WorkingClustersPage() {
       </section>
 
       {/* 2. How it works */}
-      <section id="how-it-works" className="py-14 sm:py-20 bg-white dark:bg-zinc-950">
+      <section id="how-it-works" className="py-14 sm:py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-6 relative">
@@ -140,7 +140,7 @@ export default function WorkingClustersPage() {
               <span className="text-xs uppercase font-bold text-primary tracking-wider">
                 Hyper-Local Hub Model
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+              <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground">
                 A local hub for machinery, crews, and support
               </h2>
 
@@ -182,7 +182,7 @@ export default function WorkingClustersPage() {
       </section>
 
       {/* 3. Cluster Benefits */}
-      <section className="py-14 sm:py-20 bg-[#f8f7f6] dark:bg-zinc-900/40 border-y border-border">
+      <section className="py-14 sm:py-20 bg-muted/30 border-y border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {CLUSTER_BENEFITS.map((b, index) => {
@@ -210,13 +210,13 @@ export default function WorkingClustersPage() {
       </section>
 
       {/* 4. Network Footprint — 1 State, 2 Operational Clusters */}
-      <section className="py-14 sm:py-20 bg-white dark:bg-zinc-950">
+      <section className="py-14 sm:py-20 bg-background">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal className="text-center mb-10 space-y-2">
             <span className="text-xs uppercase font-bold text-primary tracking-wider">
               Network Footprint
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+            <h2 className="text-2xl sm:text-3xl font-serif font-medium text-foreground">
               Farmo&apos;s Active Cluster Footprint
             </h2>
             <p className="text-sm text-muted-foreground max-w-xl mx-auto">
